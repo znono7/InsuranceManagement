@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace InsuranceManagement
+namespace InsuranceManagement.API
 {
     /// <summary>
     /// A shorthand access class to get dependency injection services
@@ -9,9 +9,14 @@ namespace InsuranceManagement
     {
 
         /// <summary>
-        /// The scoped instance of the <see cref="ApplicationDbContext"/>
+        /// The scoped instance of the <see cref="DapperDbContext"/>
         /// </summary>
         public static DapperDbContext? DapperDbContext => Container.Provider?.GetService<DapperDbContext>();
+
+        /// <summary>
+        /// The scoped instance of the <see cref="EFDbContext"/>
+        /// </summary>
+        public static EFDbContext? EFDbContext => Container.Provider?.GetService<EFDbContext>();
     }
 
     /// <summary>
@@ -22,6 +27,11 @@ namespace InsuranceManagement
         /// <summary>
         /// The service provider for this application
         /// </summary>
-        public static ServiceProvider? Provider { get; set; }
+        public static ServiceProvider Provider { get; set; }
+
+        /// <summary>
+        /// The configuration manager for the application
+        /// </summary>
+        public static IConfiguration Configuration { get; set; }
     }
 }

@@ -7,11 +7,12 @@ using System.Data;
 
 
 
-namespace InsuranceManagement
+namespace InsuranceManagement.API
 {
     /// <summary>
     /// The database representational model for the application
     /// This class will handle database connections
+    /// Using Dapper
     /// </summary>
     public class DapperDbContext
     {
@@ -57,9 +58,9 @@ namespace InsuranceManagement
         /// <summary>
         /// Generic method for executing a Multiple-row query asynchronously
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="sql"></param>
-        /// <param name="parameters"></param>
+        /// <typeparam name="T">query object </typeparam>
+        /// <param name="sql">sql query</param>
+        /// <param name="parameters">query parameters</param>
         /// <returns>returns multiple results</returns>
         public async Task<IEnumerable<T>> QueryMultipleAsync<T>(string sql, object? parameters = null)
         {
@@ -72,7 +73,7 @@ namespace InsuranceManagement
         /// <summary>
         /// Method for executing queries with transactions
         /// </summary>
-        /// <param name="action"></param>
+        /// <param name="action">the action to be executed</param>
         /// <returns></returns>
         public async Task ExecuteTransactionAsync(Func<IDbConnection, IDbTransaction, Task> action)
         {
@@ -82,14 +83,29 @@ namespace InsuranceManagement
             using var transaction = connection.BeginTransaction();
             try
             {
-                await action(connection, transaction);
-                transaction.Commit();
+                await action(connection, transaction); // Execute the action with the connection and transaction
+                transaction.Commit(); // Commit the transaction
             }
             catch
             {
-                transaction.Rollback();
-                throw; // Re-throw the exception after rolling back the transaction
+                transaction.Rollback(); // Rollback the transaction if ther is an exception
+                throw; // Re-throw the exception 
             }
+        }
+
+        /// <summary>
+        /// Method for executing query
+        /// </summary>
+        /// <param name="sql">sql query</param>
+        /// <param name="parameters">query parameters</param>
+        /// <returns>returns number of rows affected</returns>
+        public async Task<int> ExecuteAsync(string sql, object? parameters = null)
+        {
+            using var connection = CreateConnection();
+            await connection.OpenAsync();
+
+            return await connection.ExecuteAsync(sql, parameters);
+
         }
     }
 }

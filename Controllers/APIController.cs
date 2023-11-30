@@ -140,7 +140,7 @@ namespace InsuranceManagement.API
                 StateOfBirth = user.State.Name,
                 NIdentification = user.NIdentification,
                 Phone = user.Phone,
-                CCPpayment = user.CCPpayment,
+                CCPpayment = user.CCPpayment, 
                 Username = user.UserName,
                 Email = user.Email,
                 LicenseNumber = user.LicenseNumber,
